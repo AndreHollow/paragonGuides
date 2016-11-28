@@ -1,8 +1,12 @@
 extends layout
 
 block content
+  h6 hi
+  h1 
+  | #{guide.character_id.name}
   h1 Here you will see some guide.
   h1 #{guide.character_id.name}
+  img( src= "#{guide.character_id.image}" )
   section
     each item in guide.guide_cards1_id  
       p #{item}

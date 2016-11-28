@@ -1,4 +1,4 @@
-﻿var RELOAD_DB = false;//Important ONLY DEVELOPER MODE
+var RELOAD_DB = false;//Important ONLY DEVELOPER MODE
 var fs = require("fs");
 
 module.exports = function(file)
@@ -64,25 +64,58 @@ function initTables(db) {
 function initData(db) {
     
     var stmt = db.prepare("INSERT INTO user VALUES(?,?,?,?,?)");
+  
     stmt.run("0", "admin","","", "admin");  
+  
     stmt.finalize();
     
+  
+  
     stmt = db.prepare("INSERT INTO character VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
-    stmt.run("0", "Name", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");   
+
+    stmt.run("0", "GRIM.exe", "Порча", "http://paragon-gb.ru/wp-content/uploads/2016/08/Grimexe_pic.jpg", " 400(+100)", " 200(+21.5)", " 0,8(+0.2)", " 0,8(+0.086)", " 11(+1.2)", " 11(+1.2)", " 450", " 100(+2.8%)");
+    stmt.run("1", "Гаджет", "Порядок", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 400(+100)", " 200(+21.5)", " 0,8(+0.2)", " 0,8(+0.086)", " 11(+1.2)", " 11(+1.2)", " 450", " 100(+2.8%)");
+    stmt.run("2", "Гидеон", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");
+    stmt.run("3", "Графиня", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");
+    stmt.run("4", "Грейстоун", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");
+    stmt.run("5", "Грукс", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");
+    stmt.run("6", "Деккер", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");
+    stmt.run("7", "Игги & Скорч", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");
+    stmt.run("8", "Каллари", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");
+    stmt.run("9", "Кванг", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");
+    stmt.run("10", "Лт. Белика ", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");
+    stmt.run("11", "Мердок", "Attribute", "\'http://paragon-gb.ru/wp-content/uploads/2016/05/grim.exe-icon-150x150.jpg \' ", " 2", " 3", " 4", " 5", " 2", " 3", " 4", " 5");
+  
     stmt.finalize();
     
+  
+  
     stmt = db.prepare("INSERT INTO cards VALUES (?,?,?,?,?)");
+  
     stmt.run("0", " 0", " Card1", " http://paragon-gb.ru/wp-content/uploads/2016/08/health_potion.png ", " \'+10 Восстановления здоровья на 15 секунд. Заряды (2) пополняются на базе. Перезарядка: 15 сек. \'");
     stmt.run("1", " 0", " Card2", " http://paragon-gb.ru/wp-content/uploads/2016/08/health_potion.png ", " \'+10 Восстановления здоровья на 15 секунд. Заряды (2) пополняются на базе. Перезарядка: 15 сек. \'");
+  
     stmt.finalize();
 
+  
+  
     stmt = db.prepare("INSERT INTO guide_cards VALUES (?,?,?,?,?)");
+  
     stmt.run("0", "0", "0", "0", " null");
     stmt.run("1", "0", "1", "0", " null");
+  
     stmt.finalize();
 
+  
+  
     stmt = db.prepare("INSERT INTO guide VALUES (?,?,?,?,?,?,?,?,?,?)");
+  
     stmt.run("0", " 0", " 0", " {{0,1,0},{0,0,1}}",  "0", "1", "null", "null", "null", "null");
+    stmt.run("1", " 0", " 0", " {{0,1,0},{0,0,1}}",  "0", "1", "null", "null", "null", "null");
+    stmt.run("2", " 0", " 0", " {{0,1,0},{0,0,1}}",  "0", "1", "null", "null", "null", "null");
+    stmt.run("3", " 0", " 0", " {{0,1,0},{0,0,1}}",  "0", "1", "null", "null", "null", "null");
+    stmt.run("4", " 0", " 0", " {{0,1,0},{0,0,1}}",  "0", "1", "null", "null", "null", "null");
+  
     stmt.finalize();
 
 }
