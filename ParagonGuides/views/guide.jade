@@ -1,17 +1,25 @@
 extends layout
 
 block content
-  h6 hi
-  h1 
-  | #{guide.character_id.name}
   h1 Here you will see some guide.
-  h1 #{guide.character_id.name}
-  img( src= "#{guide.character_id.image}" )
+  h1 #{characters[guide.character_id].name}
   section
-    each item in guide.guide_cards1_id  
-      p #{item}
-      div
-        
+    if guide.guide_cards1_id  != "null"
+      div #{cards[guide.guide_cards1_id.basecard_id].name} 
+      div #{cards[guide.guide_cards1_id.update1_id].name} 
+      div #{cards[guide.guide_cards1_id.update2_id]} 
+      div #{cards[guide.guide_cards1_id.update3_id]} 
+    if guide.guide_cards2_id  != "null"
+      div #{cards[guide.guide_cards2_id.basecard_id].name} 
+      div #{cards[guide.guide_cards2_id.update1_id].name} 
+      div #{cards[guide.guide_cards2_id.update2_id]} 
+      div #{cards[guide.guide_cards2_id.update3_id]} 
+    if guide.guide_cards3_id  != "null"
+      div #{cards[guide.guide_cards3_id.basecard_id].name} 
+      div #{cards[guide.guide_cards3_id.update1_id].name} 
+      div #{cards[guide.guide_cards3_id.update2_id]} 
+      div #{cards[guide.guide_cards3_id.update3_id]} 
+
+
+  br
   p #{guidejson}
-
-

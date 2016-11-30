@@ -8,61 +8,68 @@ var token = function () {
     };
     return rand() + rand();
 };
+function saveUser(req, res, user, callback) {
+    req.session.user_id = user.id;
+    res.locals.user = user;
 
+    user.token = token();
+    userModel.saveCookies(user, function (err) {
+        res.cookie('logintoken', JSON.stringify({
+            token: user.token,
+            email: user.login
+        }), {
+                expires: new Date(Date.now() + 2 * 604800000),
+                httpOnly: true
+            });
+        callback();
+    });
+}
 
 function authenticateByCookies(req, res, next) {
-    
     var cookie = JSON.parse(req.cookies.logintoken);
     userModel.findByUserName(cookie.email, function (err, user) {
         if (!err) {
-            console.log(user.token);
-            console.log(cookie.token);
             if (user.token == cookie.token) {
-                req.session.user_id = user.id;
-                req.currentUser = user;
-                res.locals.user = user;
-                user.token = token();
-                userModel.saveCookies(user, function (err) {
-                    res.cookie('logintoken', JSON.stringify({
-                        token: user.token,
-                        email: user.login
-                    }), {
-                        expires: new Date(Date.now() + 2 * 604800000),
-                        httpOnly: true
-                    });
-                    next();
-                });
+                saveUser(req, res, user, next);
+                req.session.falied = false;
             } else {
-                console.log("DIFFRENT TOKENS");
-                next(true);
+                console.log("DIFFRENT TOKENS")
+                req.session.falied = true;
+                next();
             }
         } else {
             console.log("SESSION COOKIES USER NOT FOUND");
-            next(true);
+            req.session.falied = true;
+            next();
         }
-        
+
     });
-  
+
 }
 function loadUser(req, res, next) {
+    console.log("Session start load");
+    if (!req.session) {
+        return next();
+    }
+
     if (req.session.user_id != undefined) {
         userModel.findByID(req.session.user_id, function (err, user) {
-            console.log(user);
             if (user) {
-                req.currentUser = user;
                 res.locals.user = user;
-                console.log("Session user LOAD");
+                console.log("Session user Loaded");
+                req.session.falied = true;
                 next();
             } else {
-                next(true);
+                req.session.falied = true;
+                next();
             }
         });
-        return;
     } else if (req.cookies.logintoken) {
         authenticateByCookies(req, res, next);
-    }   
+    }
     else {
-        next(true);
+        req.session.falied = true;
+        next();
     }
 }
 
@@ -71,41 +78,33 @@ function initUser(req, res, next) {
     userModel.findByUserName(req.body.username, function (err, user) {
         if (err) {
             console.log("User are not exist !!! Username not correct");
+            req.session.falied = true;
             res.redirect('/');
             return;
         }
         if (user && user.password == req.body.password) {
-            req.session.user_id = user.id;
-            user.token = token();
-            userModel.saveCookies(user, function (err) {
-                console.log(user);
-                console.log(err);
-                res.cookie('logintoken', JSON.stringify({
-                    token: user.token,
-                    email: user.login
-                }), {
-                    expires: new Date(Date.now() + 2 * 604800000),
-                    httpOnly: true
-                });
-                
-                console.log("Session SAVED");
-                next();
-            });
+            saveUser(req, res, user, next);
+            req.session.falied = false;
         } else {
             console.log("User password not correct");
-            next(true);
+            req.session.falied = true;
+            next();
         }
     });
 }
 function deleteUser(req, res, callback) {
     if (req.session) {
-        userModel.clearCookies(req.session.user_id, function () { });
-        res.clearCookie('logintoken');
+        if (req.session.user_id) {
+            userModel.clearCookies(req.session.user_id, function () { });
+        }
         req.session.destroy(function () { });
+        res.clearCookie('logintoken');
         console.info("Session DELETE");
     }
-    callback();
+    res.redirect('/');
 }
+
+
 router.post('/new', function (req, res, next) {
     initUser(req, res, function () {
         loadUser(req, res, function () {
@@ -114,20 +113,7 @@ router.post('/new', function (req, res, next) {
     });
 });
 
-router.get('/logout', function (req, res, next) {
-    deleteUser(req, res, function () {
-        res.redirect('/');
-    });
-});
-router.use('/', function (req, res, next) {
-    loadUser(req, res, function (err) {
-        if (err) {
-            req.session.err = true;
-        }
-        else
-            req.session.err = false;
-        next();
-    });
-});
+router.get('/logout', deleteUser);
+router.use('/', loadUser);
 
 module.exports = router;
